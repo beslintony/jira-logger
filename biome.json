@@ -24,11 +24,11 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingComma": "es5",
+      "trailingCommas": "es5",
       "semicolons": "always"
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", "coverage", "*.md"]
+    "ignore": ["node_modules", "dist", "coverage", "*.md", "src/"]
   }
 }

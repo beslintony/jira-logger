@@ -7,9 +7,5 @@
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "tests"],
-  "references": [
-    { "path": "../config" },
-    { "path": "../jira-api" },
-    { "path": "../parsers" }
-  ]
+  "references": [{ "path": "../config" }, { "path": "../jira-api" }, { "path": "../parsers" }]
 }

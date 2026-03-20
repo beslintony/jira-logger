@@ -8,13 +8,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.d.ts',
-        '**/*.config.ts',
-        'e2e/',
-      ],
+      exclude: ['node_modules/', 'dist/', '**/*.d.ts', '**/*.config.ts', 'e2e/'],
       thresholds: {
         lines: 90,
         functions: 90,

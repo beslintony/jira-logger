@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ConfigManager, getDefaultConfig } from '../src/index.js';
+import type { Config } from '../src/index.js';
 
 describe('ConfigManager', () => {
   let tempDir: string;
@@ -21,7 +22,7 @@ describe('ConfigManager', () => {
     it('should return default config when file does not exist', () => {
       const config = configManager.load();
       const defaults = getDefaultConfig();
-      
+
       expect(config.version).toBe(defaults.version);
       expect(config.jira.baseUrl).toBe('');
     });
@@ -59,12 +60,12 @@ describe('ConfigManager', () => {
       config.jira.apiToken = 'test-token';
       config.jira.defaultProject = 'TEST';
       config.sources = [{ type: 'grindstone', path: '/test.gsjbd' }];
-      
+
       configManager.save(config);
 
       const savedContent = readFileSync(join(tempDir, 'config.json'), 'utf-8');
       const saved = JSON.parse(savedContent);
-      
+
       expect(saved.jira.baseUrl).toBe('https://saved.atlassian.net');
     });
 
@@ -83,7 +84,7 @@ describe('ConfigManager', () => {
         appearance: { dateFormat: 'iso' },
       };
 
-      expect(() => configManager.save(invalidConfig as any)).toThrow();
+      expect(() => configManager.save(invalidConfig as Config)).toThrow();
     });
   });
 
@@ -97,7 +98,7 @@ describe('ConfigManager', () => {
       validConfig.sources = [{ type: 'grindstone', path: '/test.gsjbd' }];
 
       const result = configManager.validate(validConfig);
-      
+
       expect(result.success).toBe(true);
       expect(result.errors).toBeNull();
       expect(result.data).not.toBeNull();
@@ -113,7 +114,7 @@ describe('ConfigManager', () => {
       };
 
       const result = configManager.validate(invalidConfig);
-      
+
       expect(result.success).toBe(false);
       expect(result.errors).not.toBeNull();
     });

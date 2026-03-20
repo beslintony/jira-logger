@@ -31,8 +31,5 @@
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"
   },
-  "workspaces": [
-    "packages/*",
-    "e2e"
-  ]
+  "workspaces": ["packages/*", "e2e"]
 }

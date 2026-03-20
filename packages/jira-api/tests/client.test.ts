@@ -52,7 +52,7 @@ describe('JiraClient', () => {
         expect.stringContaining('/rest/api/3/search?'),
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': expect.stringContaining('Basic '),
+            Authorization: expect.stringContaining('Basic '),
           }),
         })
       );
