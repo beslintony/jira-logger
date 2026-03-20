@@ -9,7 +9,7 @@
   },
   "packageManager": "pnpm@8.15.0",
   "scripts": {
-    "build": "pnpm --filter @jira-logger/config exec tsc && pnpm --filter @jira-logger/parsers exec tsc && pnpm --filter @jira-logger/jira-api exec tsc && pnpm --filter @jira-logger/core exec tsc --build && pnpm --filter @jira-logger/cli exec tsc --build",
+    "build": "pnpm --filter @jira-logger/config exec tsc && pnpm --filter @jira-logger/parsers exec tsc && pnpm --filter @jira-logger/jira-api exec tsc && pnpm --filter @jira-logger/core exec tsc && pnpm --filter @jira-logger/cli exec tsc",
     "dev": "pnpm -r dev",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
@@ -18,7 +18,7 @@
     "lint:fix": "biome lint . --apply",
     "format": "biome format . --write",
     "format:check": "biome format .",
-    "typecheck": "pnpm --filter @jira-logger/config exec tsc --noEmit && pnpm --filter @jira-logger/parsers exec tsc --noEmit && pnpm --filter @jira-logger/jira-api exec tsc --noEmit && pnpm --filter @jira-logger/core exec tsc --noEmit && pnpm --filter @jira-logger/cli exec tsc --noEmit",
+    "typecheck": "pnpm build",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "changeset": "changeset",
     "version": "changeset version",
