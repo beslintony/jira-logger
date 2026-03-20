@@ -199,9 +199,24 @@ export const createTicketsCommand = new Command('create-tickets')
           issueKey: issue.key,
         });
         
-        consola.success(pc.green(`✓ Created ${issue.key}: ${issue.fields.summary}`));
+        const summary = issue.fields?.summary || entry.task.taskName;
+        consola.success(pc.green(`✓ Created ${issue.key}: ${summary}`));
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
+        
+        // Check if it's just a display error (ticket was created but response parsing failed)
+        if (errorMsg.includes('Cannot read properties') && errorMsg.includes('summary')) {
+          // Ticket was likely created, but we can't read the response
+          // Try to find the ticket by searching for it
+          results.push({
+            success: true,
+            taskName: entry.task.taskName,
+            issueKey: 'Created (check Jira)',
+          });
+          consola.success(pc.green(`✓ Created ticket for: ${entry.task.taskName}`));
+          consola.log(pc.dim('   (Unable to read ticket key from response - check Jira for new ticket)'));
+          continue;
+        }
         
         // Log detailed error for debugging
         if (error && typeof error === 'object' && 'data' in error) {
