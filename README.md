@@ -76,6 +76,9 @@ jira-time-logger log
 | `status` | Check status of unlogged work |
 | `sync` | Sync with Jira and validate mappings |
 | `sync --validate-mappings` | Validate saved ticket mappings |
+| `create-tickets` | Create Jira tickets from entries without tickets |
+| `create-tickets --template <name>` | Use specific template |
+| `create-tickets --dry-run` | Preview tickets without creating |
 
 ## Configuration
 
@@ -119,6 +122,47 @@ jira-time-logger import grindstone /path/to/file.gsjbd
 ### CSV
 ```bash
 jira-time-logger import csv /path/to/timesheet.csv --mapping "task:Task,start:Start,end:End"
+```
+
+## Ticket Templates
+
+When you have time entries without Jira ticket IDs, you can automatically create tickets using templates:
+
+```bash
+# Create tickets for entries without ticket IDs
+jira-time-logger create-tickets
+
+# Use a specific template
+jira-time-logger create-tickets --template development
+
+# Preview without creating
+jira-time-logger create-tickets --template meeting --dry-run
+```
+
+### Built-in Templates
+
+| Template | Issue Type | Labels | Use Case |
+|----------|-----------|--------|----------|
+| `task` | Task | time-tracked | General work |
+| `development` | Task | development, time-tracked | Development work |
+| `meeting` | Task | meeting, time-tracked | Meetings and discussions |
+| `bug` | Bug | bug, time-tracked | Bug fixes |
+| `research` | Story | research, time-tracked | Research and investigation |
+
+### Example Workflow
+
+```bash
+# Import time entries
+jira-time-logger import grindstone /path/to/time.gsjbd
+
+# Preview what needs tickets
+jira-time-logger create-tickets --dry-run
+
+# Create tickets for development work
+jira-time-logger create-tickets --template development
+
+# Now log time (entries with new tickets will be matched)
+jira-time-logger log
 ```
 
 ## Development
