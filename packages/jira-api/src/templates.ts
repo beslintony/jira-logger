@@ -165,6 +165,34 @@ export function substituteTemplate(
 }
 
 /**
+ * Create plain text description (for APIs that support it)
+ */
+function createPlainDescription(text: string): {
+  type: 'doc';
+  version: 1;
+  content: Array<{
+    type: 'paragraph';
+    content: Array<{ type: 'text'; text: string }>;
+  }>;
+} {
+  return {
+    type: 'doc',
+    version: 1,
+    content: [
+      {
+        type: 'paragraph',
+        content: [
+          {
+            type: 'text',
+            text: text,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+/**
  * Create a Jira issue payload from template
  */
 export function createIssueFromTemplate(
@@ -176,7 +204,14 @@ export function createIssueFromTemplate(
     project: { key: string };
     issuetype: { name: string };
     summary: string;
-    description?: string;
+    description?: {
+      type: 'doc';
+      version: 1;
+      content: Array<{
+        type: 'paragraph';
+        content: Array<{ type: 'text'; text: string }>;
+      }>;
+    };
     priority?: { name: string };
     labels?: string[];
     components?: { name: string }[];
@@ -191,7 +226,14 @@ export function createIssueFromTemplate(
       project: { key: string };
       issuetype: { name: string };
       summary: string;
-      description?: string;
+      description?: {
+        type: 'doc';
+        version: 1;
+        content: Array<{
+          type: 'paragraph';
+          content: Array<{ type: 'text'; text: string }>;
+        }>;
+      };
       priority?: { name: string };
       labels?: string[];
       components?: { name: string }[];
@@ -206,7 +248,7 @@ export function createIssueFromTemplate(
   };
   
   if (description) {
-    payload.fields.description = description;
+    payload.fields.description = createPlainDescription(description);
   }
   
   if (template.priority) {

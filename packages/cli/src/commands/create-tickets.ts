@@ -202,6 +202,35 @@ export const createTicketsCommand = new Command('create-tickets')
         consola.success(pc.green(`✓ Created ${issue.key}: ${issue.fields.summary}`));
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
+        
+        // Log detailed error for debugging
+        if (error && typeof error === 'object' && 'data' in error) {
+          const jiraError = error as { 
+            status?: number;
+            data?: { errorMessages?: string[]; errors?: Record<string, string> } 
+          };
+          
+          // Handle specific error cases
+          if (jiraError.status === 401) {
+            consola.error(pc.red('\n  ⚠️  Permission denied'));
+            consola.error(pc.yellow('\n  Your Jira account does not have permission to create issues.'));
+            consola.log(pc.dim('\n  Possible solutions:'));
+            consola.log(pc.dim('    1. Check that you have "Create Issues" permission in project ' + config.jira.defaultProject));
+            consola.log(pc.dim('    2. Verify your API token has the required scopes'));
+            consola.log(pc.dim('    3. Contact your Jira administrator'));
+          } else if (jiraError.data?.errorMessages) {
+            consola.error(pc.red('\n  Error details:'));
+            for (const msg of jiraError.data.errorMessages) {
+              consola.error(pc.red(`    - ${msg}`));
+            }
+          }
+          if (jiraError.data?.errors) {
+            for (const [field, msg] of Object.entries(jiraError.data.errors)) {
+              consola.error(pc.red(`    - ${field}: ${msg}`));
+            }
+          }
+        }
+        
         results.push({
           success: false,
           taskName: entry.task.taskName,

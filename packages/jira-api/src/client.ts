@@ -215,7 +215,14 @@ export class JiraClient {
       project: { key: string };
       issuetype: { name: string };
       summary: string;
-      description?: string;
+      description?: {
+        type: 'doc';
+        version: 1;
+        content: Array<{
+          type: 'paragraph';
+          content: Array<{ type: 'text'; text: string }>;
+        }>;
+      };
       priority?: { name: string };
       labels?: string[];
       components?: { name: string }[];
