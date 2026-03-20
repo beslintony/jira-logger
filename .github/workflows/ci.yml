@@ -63,12 +63,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: |
-          pnpm --filter @jira-logger/config exec tsc
-          pnpm --filter @jira-logger/parsers exec tsc
-          pnpm --filter @jira-logger/jira-api exec tsc
-          pnpm --filter @jira-logger/core exec tsc
-          pnpm --filter @jira-logger/cli exec tsc
+        run: pnpm run build
 
       - name: Test
         run: npx vitest run
