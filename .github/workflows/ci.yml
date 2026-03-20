@@ -62,22 +62,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: |
-          # Build in dependency order
-          cd packages/config && pnpm build && cd ../..
-          cd packages/parsers && pnpm build && cd ../..
-          cd packages/jira-api && pnpm build && cd ../..
-          cd packages/core && pnpm build && cd ../..
-          cd packages/cli && pnpm build && cd ../..
+      - name: Build config package
+        run: pnpm --filter @jira-logger/config exec tsc
 
-      - name: Type check
-        run: |
-          cd packages/config && pnpm typecheck && cd ../..
-          cd packages/parsers && pnpm typecheck && cd ../..
-          cd packages/jira-api && pnpm typecheck && cd ../..
-          cd packages/core && pnpm typecheck && cd ../..
-          cd packages/cli && pnpm typecheck && cd ../..
+      - name: Build parsers package
+        run: pnpm --filter @jira-logger/parsers exec tsc
+
+      - name: Build jira-api package
+        run: pnpm --filter @jira-logger/jira-api exec tsc
+
+      - name: Build core package
+        run: pnpm --filter @jira-logger/core exec tsc --build
+
+      - name: Build cli package
+        run: pnpm --filter @jira-logger/cli exec tsc --build
+
+      - name: Type check config
+        run: pnpm --filter @jira-logger/config exec tsc --noEmit
+
+      - name: Type check parsers
+        run: pnpm --filter @jira-logger/parsers exec tsc --noEmit
+
+      - name: Type check jira-api
+        run: pnpm --filter @jira-logger/jira-api exec tsc --noEmit
+
+      - name: Type check core
+        run: pnpm --filter @jira-logger/core exec tsc --noEmit
+
+      - name: Type check cli
+        run: pnpm --filter @jira-logger/cli exec tsc --noEmit
 
       - name: Test
         run: npx vitest run
