@@ -91,17 +91,20 @@ export interface WorkLog {
  * Search results from JQL query
  */
 export interface SearchResults {
-  /** Total number of issues matching query */
-  total: number;
+  /** Total number of issues matching query (may not be present in v3/search/jql) */
+  total?: number;
   
   /** Issues in current page */
   issues: JiraIssue[];
   
   /** Start at index */
-  startAt: number;
+  startAt?: number;
   
   /** Max results per page */
-  maxResults: number;
+  maxResults?: number;
+  
+  /** Whether this is the last page of results */
+  isLast?: boolean;
 }
 
 /**

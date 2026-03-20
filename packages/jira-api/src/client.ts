@@ -61,7 +61,16 @@ export class JiraClient {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({})) as JiraApiError;
+          let errorData: JiraApiError = {};
+          let errorText = '';
+          
+          try {
+            errorText = await response.text();
+            errorData = JSON.parse(errorText) as JiraApiError;
+          } catch {
+            errorData = { errorMessages: [errorText || response.statusText] };
+          }
+          
           throw new JiraError(
             `Jira API error: ${response.status} ${response.statusText}`,
             response.status,
@@ -91,22 +100,27 @@ export class JiraClient {
 
   /**
    * Search for issues using JQL
+   * Uses POST to /rest/api/3/search as GET is deprecated
    */
   async searchIssues(options: SearchOptions): Promise<SearchResults> {
-    const params = new URLSearchParams();
-    params.append('jql', options.jql);
+    const body: Record<string, unknown> = {
+      jql: options.jql,
+    };
     
     if (options.fields) {
-      params.append('fields', options.fields.join(','));
+      body.fields = options.fields;
     }
     if (options.startAt !== undefined) {
-      params.append('startAt', options.startAt.toString());
+      body.startAt = options.startAt;
     }
     if (options.maxResults !== undefined) {
-      params.append('maxResults', options.maxResults.toString());
+      body.maxResults = options.maxResults;
     }
 
-    return this.request<SearchResults>(`/rest/api/3/search?${params.toString()}`);
+    return this.request<SearchResults>('/rest/api/3/search/jql', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
   }
 
   /**
