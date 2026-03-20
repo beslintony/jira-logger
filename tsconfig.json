@@ -19,14 +19,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "@jira-logger/config": ["./packages/config/dist"],
-      "@jira-logger/parsers": ["./packages/parsers/dist"],
-      "@jira-logger/jira-api": ["./packages/jira-api/dist"],
-      "@jira-logger/core": ["./packages/core/dist"]
-    }
+    "rootDir": "."
   },
   "include": ["packages/*/src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
