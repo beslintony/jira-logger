@@ -49,7 +49,7 @@ describe('JiraClient', () => {
       expect(results.issues).toHaveLength(1);
       expect(results.issues[0].key).toBe('TEST-123');
       expect(fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/rest/api/3/search?'),
+        expect.stringContaining('/rest/api/3/search/jql'),
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: expect.stringContaining('Basic '),
