@@ -105,6 +105,9 @@ export interface SearchResults {
   
   /** Whether this is the last page of results */
   isLast?: boolean;
+  
+  /** Next page token (for pagination in v3/search/jql) */
+  nextPageToken?: string;
 }
 
 /**
