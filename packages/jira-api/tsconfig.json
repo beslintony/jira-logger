@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@jira-logger/config": ["../config/dist"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["dist", "tests"],
