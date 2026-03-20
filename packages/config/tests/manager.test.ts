@@ -55,6 +55,10 @@ describe('ConfigManager', () => {
     it('should save config to file', () => {
       const config = getDefaultConfig();
       config.jira.baseUrl = 'https://saved.atlassian.net';
+      config.jira.username = 'test@example.com';
+      config.jira.apiToken = 'test-token';
+      config.jira.defaultProject = 'TEST';
+      config.sources = [{ type: 'grindstone', path: '/test.gsjbd' }];
       
       configManager.save(config);
 

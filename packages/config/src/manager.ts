@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { envPaths } from 'env-paths';
+import envPaths from 'env-paths';
 import type { Config, PartialConfig, ValidationResult } from './schemas.js';
 import { configSchema } from './schemas.js';
 
@@ -10,7 +10,7 @@ const APP_NAME = 'jira-time-logger';
  * Default configuration values
  */
 const defaultConfig: Config = {
-  version: '2.0.0',
+  version: '2.0.0' as const,
   jira: {
     baseUrl: '',
     username: '',
@@ -162,8 +162,7 @@ export class ConfigManager {
    */
   private mergeConfigs(current: Config, updates: PartialConfig): Config {
     return {
-      ...current,
-      ...updates,
+      version: updates.version ?? current.version ?? '2.0.0',
       jira: {
         ...current.jira,
         ...updates.jira,
@@ -196,5 +195,12 @@ export function createConfigManager(customPath?: string): ConfigManager {
  * Get default configuration
  */
 export function getDefaultConfig(): Config {
-  return { ...defaultConfig };
+  return {
+    version: '2.0.0',
+    jira: { ...defaultConfig.jira },
+    timeRounding: { ...defaultConfig.timeRounding },
+    sources: [],
+    commentTemplate: { ...defaultConfig.commentTemplate },
+    appearance: { ...defaultConfig.appearance },
+  };
 }
