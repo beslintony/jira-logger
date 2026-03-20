@@ -18,7 +18,7 @@
     "lint:fix": "biome lint . --apply",
     "format": "biome format . --write",
     "format:check": "biome format .",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "tsc --build packages/config packages/parsers packages/jira-api packages/core packages/cli --force",
     "clean": "pnpm -r clean && rm -rf node_modules",
     "changeset": "changeset",
     "version": "changeset version",
