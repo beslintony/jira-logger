@@ -10,6 +10,8 @@ import type {
   ADFDocument,
 } from './types.js';
 import { createADFDocument } from './types.js';
+import type { TicketTemplate, TemplateContext } from './templates.js';
+import { createIssueFromTemplate } from './templates.js';
 
 /**
  * Jira API client with retry logic and error handling
@@ -203,6 +205,49 @@ export class JiraClient {
     await this.request(`/rest/api/3/issue/${issueKey}/worklog/${workLogId}`, {
       method: 'DELETE',
     });
+  }
+
+  /**
+   * Create a new issue
+   */
+  async createIssue(payload: {
+    fields: {
+      project: { key: string };
+      issuetype: { name: string };
+      summary: string;
+      description?: string;
+      priority?: { name: string };
+      labels?: string[];
+      components?: { name: string }[];
+      [key: string]: unknown;
+    };
+  }): Promise<JiraIssue> {
+    return this.request<JiraIssue>('/rest/api/3/issue', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  }
+
+  /**
+   * Create an issue from a template
+   */
+  async createIssueFromTemplate(
+    template: TicketTemplate,
+    context: TemplateContext,
+    defaultProject: string
+  ): Promise<JiraIssue> {
+    const payload = createIssueFromTemplate(template, context, defaultProject);
+    return this.createIssue(payload);
+  }
+
+  /**
+   * Get available issue types for a project
+   */
+  async getIssueTypes(projectKey?: string): Promise<Array<{ id: string; name: string; description?: string }>> {
+    const url = projectKey 
+      ? `/rest/api/3/issuetype/project?projectKey=${projectKey}`
+      : '/rest/api/3/issuetype';
+    return this.request(url);
   }
 
   /**

@@ -10,6 +10,7 @@ import { previewCommand } from './commands/preview.js';
 import { logCommand } from './commands/log.js';
 import { statusCommand } from './commands/status.js';
 import { syncCommand } from './commands/sync.js';
+import { createTicketsCommand } from './commands/create-tickets.js';
 
 const program = new Command();
 
@@ -34,6 +35,7 @@ program.addCommand(previewCommand);
 program.addCommand(logCommand);
 program.addCommand(statusCommand);
 program.addCommand(syncCommand);
+program.addCommand(createTicketsCommand);
 
 // Default action - show help
 program.action(() => {
