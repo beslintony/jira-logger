@@ -1,0 +1,33 @@
+{
+  "name": "@jira-logger/parsers",
+  "version": "2.0.0",
+  "description": "Time tracking file parsers for various formats (Grindstone, Toggl, Clockify, CSV)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/papaparse": "^5.3.14"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

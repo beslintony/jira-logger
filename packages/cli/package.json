@@ -1,0 +1,43 @@
+{
+  "name": "@jira-logger/cli",
+  "version": "2.0.0",
+  "description": "CLI interface for Jira Time Logger",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "jira-time-logger": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jira-logger/config": "workspace:*",
+    "@jira-logger/core": "workspace:*",
+    "@jira-logger/jira-api": "workspace:*",
+    "@jira-logger/parsers": "workspace:*",
+    "@clack/prompts": "^0.7.0",
+    "commander": "^12.0.0",
+    "consola": "^3.2.3",
+    "ora": "^8.0.1",
+    "picocolors": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
