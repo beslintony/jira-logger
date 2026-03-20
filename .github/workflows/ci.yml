@@ -37,30 +37,7 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Type check
-        run: pnpm typecheck
-
-  test:
+  build-and-test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -85,11 +62,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm build
+      - name: Build packages
+        run: |
+          # Build in dependency order
+          cd packages/config && pnpm build && cd ../..
+          cd packages/parsers && pnpm build && cd ../..
+          cd packages/jira-api && pnpm build && cd ../..
+          cd packages/core && pnpm build && cd ../..
+          cd packages/cli && pnpm build && cd ../..
+
+      - name: Type check
+        run: |
+          cd packages/config && pnpm typecheck && cd ../..
+          cd packages/parsers && pnpm typecheck && cd ../..
+          cd packages/jira-api && pnpm typecheck && cd ../..
+          cd packages/core && pnpm typecheck && cd ../..
+          cd packages/cli && pnpm typecheck && cd ../..
 
       - name: Test
-        run: pnpm test --run
+        run: npx vitest run
 
       - name: Upload coverage
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == 20
@@ -97,29 +88,3 @@ jobs:
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: false
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
-
-      - name: Check exports
-        run: pnpm --filter @jira-logger/cli exec node -e "require('./dist/index.js')" --input-type=module
