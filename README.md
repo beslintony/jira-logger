@@ -1,118 +1,225 @@
-# Jira Time Logger
+# Jira Time Logger v2.0
 
-A basic CLI tool for logging time from Grindstone time tracking files to Jira.
+A modern CLI tool to log time from various time-tracking sources to Jira.
+
+[![CI](https://github.com/beslintony/jira-time-logger/actions/workflows/ci.yml/badge.svg)](https://github.com/beslintony/jira-time-logger/actions)
+[![npm version](https://img.shields.io/npm/v/jira-time-logger.svg)](https://www.npmjs.com/package/jira-time-logger)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
-- **Smart Ticket Matching**: Automatically matches Grindstone tasks to Jira tickets
-- **Task-to-Ticket Mapping**: Maintains a mapping database for consistent logging
-- **Time Rounding**: Option to round time to the nearest X minutes
-- **Work Log Comments**: Generates meaningful comments with customization options
-- **Interactive CLI**: User-friendly interface with colorful output
-- **Date Range Selection**: Choose date ranges for logging
-- **Filtering & Validation**: Skip already logged entries and verify tickets
+- 🔌 **Multiple Sources** - Import from Grindstone, Toggl, Clockify, or generic CSV
+- 🔍 **Smart Matching** - Automatically matches tasks to Jira tickets
+- ⏱️ **Time Rounding** - Configurable time rounding rules
+- 👀 **Preview Mode** - Preview work logs before sending to Jira
+- 🔒 **Secure** - API tokens stored safely, never in plain text
+- 🎨 **Modern UI** - Beautiful interactive prompts with progress indicators
+- 📊 **Statistics** - View time tracking statistics and reports
 
-## Prerequisites
+## Installation
 
-1. A Jira account with API access
-2. Grindstone time tracking files (.gsjbd)
-3. Node.js 18.0.0 or higher
+```bash
+npm install -g jira-time-logger
+```
 
-## Getting Started
+Or with pnpm:
 
-1. **Initialize the tool**:
-   ```bash
-   npm start settings
-   ```
-   You'll be prompted to enter your Jira credentials and other settings.
+```bash
+pnpm add -g jira-time-logger
+```
 
-2. **Log time**:
-   ```bash
-   npm start run
-   ```
-   The tool will guide you through the time logging process.
+## Quick Start
+
+### 1. Initialize Configuration
+
+```bash
+jira-time-logger init
+```
+
+This interactive wizard will guide you through:
+- Jira connection settings (URL, username, API token)
+- Time tracking source selection
+- Time rounding preferences
+
+### 2. Import Time Entries
+
+```bash
+jira-time-logger import grindstone /path/to/time-tracking.gsjbd
+```
+
+### 3. Preview Work Logs
+
+```bash
+jira-time-logger preview
+```
+
+### 4. Log Time to Jira
+
+```bash
+jira-time-logger log
+```
 
 ## Commands
 
-- `npm start` - Start the interactive CLI
-- `npm start settings` - Update settings
-- `npm start sync` - Sync task-ticket mappings with Jira
-- `npm start view` - View recent logged entries
-- `npm start check` - Check for unlogged work
-- `npm start check --days 14` - Check unlogged work from the last 14 days
+| Command | Description |
+|---------|-------------|
+| `init` | Initialize configuration interactively |
+| `config` | View and manage configuration |
+| `config get <key>` | Get a specific config value |
+| `config set <key> <value>` | Set a config value |
+| `config view` | View full configuration |
+| `config reset` | Reset to defaults |
+| `import <source> [path]` | Import time entries from file |
+| `preview` | Preview work logs before sending |
+| `log` | Log time entries to Jira |
+| `log --dry-run` | Preview without logging |
+| `status` | Check status of unlogged work |
+| `sync` | Sync with Jira and validate mappings |
+| `sync --validate-mappings` | Validate saved ticket mappings |
+| `create-tickets` | Create Jira tickets from entries without tickets |
+| `create-tickets --template <name>` | Use specific template |
+| `create-tickets --dry-run` | Preview tickets without creating |
 
 ## Configuration
 
-When running the settings command, you'll be asked to provide:
+Configuration is stored in your system's config directory:
 
-### Jira Settings
-- **Base URL**: Your Jira instance URL (e.g., `https://your-domain.atlassian.net`)
-- **Username**: Your Jira username (email)
-- **API Token**: Your Jira API token ([how to get a token](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/))
-- **Default Project**: The key of your default Jira project (e.g., `PROJ`)
+- **macOS**: `~/Library/Preferences/jira-time-logger/config.json`
+- **Linux**: `~/.config/jira-time-logger/config.json`
+- **Windows**: `%APPDATA%/jira-time-logger/config.json`
 
-### Time Rounding
-- **Enable/Disable**: Whether to round time entries
-- **Round To**: Round to the nearest X minutes (e.g., 15)
+### Example Configuration
 
-### File Paths
-- **Grindstone Path**: Path to your .gsjbd file
-- **Mappings Path**: Path to store mappings data
+```json
+{
+  "version": "2.0.0",
+  "jira": {
+    "baseUrl": "https://company.atlassian.net",
+    "username": "user@example.com",
+    "apiToken": "***",
+    "defaultProject": "PROJ"
+  },
+  "timeRounding": {
+    "enabled": true,
+    "roundToMinutes": 15
+  },
+  "sources": [
+    {
+      "type": "grindstone",
+      "path": "/path/to/time-tracking.gsjbd"
+    }
+  ]
+}
+```
 
-### Other Settings
-- **Comment Template**: Template for work log comments
-- **Test Connection**: Option to test Jira connection
+## Supported Time Tracking Sources
 
-## How It Works
+### Grindstone (.gsjbd)
+```bash
+jira-time-logger import grindstone /path/to/file.gsjbd
+```
 
-1. **Parsing**: Reads time entries from your Grindstone file
-2. **Grouping**: Groups entries by day and task
-3. **Matching**: Matches tasks to Jira tickets using various methods:
-   - Exact ticket ID in task name (e.g., "PROJ-123 Task name")
-   - Text similarity matching
-   - Previously saved mappings
-4. **Logging**: Logs time to Jira with appropriate comments
-5. **Saving**: Saves mappings for future use
+### CSV
+```bash
+jira-time-logger import csv /path/to/timesheet.csv --mapping "task:Task,start:Start,end:End"
+```
 
-## Tips
+## Ticket Templates
 
-- **Task Naming**: Include the Jira ticket ID in your Grindstone task names for automatic matching
-- **Regular Sync**: Use the `sync` command to keep your mappings up to date
-- **Check Command**: Use the `check` command to find unlogged work before running the main tool
+When you have time entries without Jira ticket IDs, you can automatically create tickets using templates:
 
-## FAQ
+```bash
+# Create tickets for entries without ticket IDs
+jira-time-logger create-tickets
 
-### How are task names matched to Jira tickets?
-The tool uses a multi-step approach:
-1. Check if there's a saved mapping
-2. Look for a Jira ticket ID in the task name (e.g., "PROJ-123")
-3. Compare task name with ticket summaries for similarity
-4. If multiple matches are found, you'll be prompted to select the correct one
+# Use a specific template
+jira-time-logger create-tickets --template development
 
-### Can I log time to closed tickets?
-Yes, but you'll receive a warning before logging.
+# Preview without creating
+jira-time-logger create-tickets --template meeting --dry-run
+```
 
-### What happens if I've already logged time for a task?
-The tool checks for previously logged entries and skips them to avoid duplication.
+### Built-in Templates
 
-### Can I customize the comment format?
-Yes, you can customize the default comment template in settings and also edit comments before logging.
+| Template | Issue Type | Labels | Use Case |
+|----------|-----------|--------|----------|
+| `task` | Task | time-tracked | General work |
+| `development` | Task | development, time-tracked | Development work |
+| `meeting` | Task | meeting, time-tracked | Meetings and discussions |
+| `bug` | Bug | bug, time-tracked | Bug fixes |
+| `research` | Story | research, time-tracked | Research and investigation |
 
-## Troubleshooting
+### Example Workflow
 
-### Error: "Failed to connect to Jira"
-Check your Jira URL, username, and API token in settings.
+```bash
+# Import time entries
+jira-time-logger import grindstone /path/to/time.gsjbd
 
-### Error: "File not found"
-Make sure your Grindstone file path is correct in settings.
+# Preview what needs tickets
+jira-time-logger create-tickets --dry-run
 
-### No tickets found
-Check that your default project key is correct and you have access to the project.
+# Create tickets for development work
+jira-time-logger create-tickets --template development
 
-## License
+# Now log time (entries with new tickets will be matched)
+jira-time-logger log
+```
 
-MIT
+## Development
+
+### Setup
+
+```bash
+git clone https://github.com/beslintony/jira-time-logger.git
+cd jira-time-logger
+pnpm install
+```
+
+### Build
+
+```bash
+pnpm build
+```
+
+### Test
+
+```bash
+pnpm test
+```
+
+### Lint
+
+```bash
+pnpm lint
+pnpm format
+```
+
+## Architecture
+
+This project uses a monorepo structure with pnpm workspaces:
+
+- `@jira-logger/config` - Configuration management with Zod validation
+- `@jira-logger/parsers` - Time tracking file parsers
+- `@jira-logger/jira-api` - Jira REST API client
+- `@jira-logger/core` - Business logic and ticket matching
+- `@jira-logger/cli` - CLI interface
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on:
+- Reporting issues
+- Suggesting features
+- Submitting pull requests
+
+## Security
+
+Please report security vulnerabilities to [beslintony@gmail.com](mailto:beslintony@gmail.com).
+See [SECURITY.md](./SECURITY.md) for details.
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for version history.
+
+## License
+
+MIT © [Tony Benslin](https://github.com/beslintony)

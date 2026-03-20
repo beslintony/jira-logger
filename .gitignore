@@ -4,6 +4,9 @@ node_modules/
 # Build directory
 dist/
 
+# Test coverage
+coverage/
+
 # Data files
 data/*.json
 data/*.gsjbd

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@jira-logger/config": ["../config/dist"],
+      "@jira-logger/core": ["../core/dist"],
+      "@jira-logger/jira-api": ["../jira-api/dist"],
+      "@jira-logger/parsers": ["../parsers/dist"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "tests"]
+}
