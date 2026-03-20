@@ -9,7 +9,7 @@
   },
   "packageManager": "pnpm@8.15.0",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "tsc --build packages/config packages/parsers packages/jira-api packages/core packages/cli",
     "dev": "pnpm -r dev",
     "test": "vitest",
     "test:coverage": "vitest --coverage",

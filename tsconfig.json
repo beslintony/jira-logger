@@ -22,5 +22,12 @@
     "rootDir": "."
   },
   "include": ["packages/*/src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts"],
+  "references": [
+    { "path": "./packages/config" },
+    { "path": "./packages/parsers" },
+    { "path": "./packages/jira-api" },
+    { "path": "./packages/core" },
+    { "path": "./packages/cli" }
+  ]
 }
